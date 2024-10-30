@@ -15,6 +15,8 @@ namespace Image_Processing
         int height;
         int width;
         int stride;
+        int[] histogram;
+        //Bitmap bitMapHisto;
         public Form1()
         {
             InitializeComponent();
@@ -114,7 +116,7 @@ namespace Image_Processing
                             // Assign the right pixel to the left pixel
                             destinationPointer[indexRight] = tempBlue;       // Blue
                             destinationPointer[indexRight + 1] = tempGreen;  // Green
-                            destinationPointer[indexRight + 1] = tempRed;     // Red
+                            destinationPointer[indexRight + 2] = tempRed;     // Red
                         }
                     });
                 }
@@ -141,11 +143,15 @@ namespace Image_Processing
                                     destinationPointer[index + 1] = sourcePointer[index + 1]; // Green
                                     destinationPointer[index + 2] = sourcePointer[index + 2]; // Red
                                     break;
+                                case "Histogram":
                                 case "Grayscale":
                                     byte grayValue = (byte)((red + green + blue) / 3);
                                     destinationPointer[index] = grayValue;
                                     destinationPointer[index + 1] = grayValue;
                                     destinationPointer[index + 2] = grayValue;
+                                    if (processDefiner == "Histogram") {
+                                        histogram[grayValue]++;
+                                    }
                                     break;
                                 case "Inversion":
                                     byte deductBlue = (byte)Math.Max(0, 255 - blue);
@@ -177,6 +183,7 @@ namespace Image_Processing
             this.setUnlockedBitmapData();
             this.setPictureBoxTwoImage();
         }
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
@@ -248,6 +255,51 @@ namespace Image_Processing
         private void mirrorToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             this.imagePointerHandler("Mirror");
+        }
+
+        private void histogramToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.histogram = new int[256];
+            // Gets the histogram Frequency Using Grayscaling
+            this.imagePointerHandler("Histogram");
+            Bitmap _newProcessedImage = new Bitmap(256, 256*2, PixelFormat.Format24bppRgb);
+            BitmapData newProcessedData = _newProcessedImage.LockBits(
+                new Rectangle(0, 0, _newProcessedImage.Width, _newProcessedImage.Height),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format24bppRgb
+                );
+            int newStride = newProcessedData.Stride;
+            int width = _newProcessedImage.Width;
+            int height = _newProcessedImage.Height;
+            unsafe {
+                byte* bitptr = (byte*)newProcessedData.Scan0;
+                // Draw histogram bars based on frequency
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        int index = y * newStride + x * 3; // Correctly calculate the index using newStride
+                        bitptr[index] = 255;      // Blue
+                        bitptr[index + 1] = 255;  // Green
+                        bitptr[index + 2] = 255;  // Red
+                    }
+                }
+                // Now draw the histogram bars based on frequency
+                Parallel.For(0, 256, x =>
+                {
+                    int barHeight = Math.Min(histogram[x] / 5, height); // Scale down the height of the bar
+                    for (int y = 0; y < barHeight; y++) // Start from the top
+                    {
+                        int index = (height - 1 - y) * newStride + x * 3;
+                        // 44,62,117
+                        bitptr[index] = 117;          // Blue
+                        bitptr[index + 1] = 62;      // Green
+                        bitptr[index + 2] = 44;      // Red
+                    }
+                });
+            }
+            _newProcessedImage.UnlockBits(newProcessedData);
+            this.pictureBox2.Image = _newProcessedImage;
         }
     }
 }

@@ -37,11 +37,12 @@
             grayscallingToolStripMenuItem = new ToolStripMenuItem();
             mirrorToolStripMenuItem = new ToolStripMenuItem();
             sepiaToolStripMenuItem = new ToolStripMenuItem();
+            mirrorToolStripMenuItem1 = new ToolStripMenuItem();
+            histogramToolStripMenuItem = new ToolStripMenuItem();
             openFileDialog1 = new OpenFileDialog();
             saveFileDialog1 = new SaveFileDialog();
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
-            mirrorToolStripMenuItem1 = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -81,7 +82,7 @@
             // 
             // dIPToolStripMenuItem
             // 
-            dIPToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { pixelCopyToolStripMenuItem, grayscallingToolStripMenuItem, mirrorToolStripMenuItem, sepiaToolStripMenuItem, mirrorToolStripMenuItem1 });
+            dIPToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { pixelCopyToolStripMenuItem, grayscallingToolStripMenuItem, mirrorToolStripMenuItem, sepiaToolStripMenuItem, mirrorToolStripMenuItem1, histogramToolStripMenuItem });
             dIPToolStripMenuItem.Name = "dIPToolStripMenuItem";
             dIPToolStripMenuItem.Size = new Size(46, 24);
             dIPToolStripMenuItem.Text = "DIP";
@@ -114,6 +115,20 @@
             sepiaToolStripMenuItem.Text = "Sepia";
             sepiaToolStripMenuItem.Click += sepiaToolStripMenuItem_Click;
             // 
+            // mirrorToolStripMenuItem1
+            // 
+            mirrorToolStripMenuItem1.Name = "mirrorToolStripMenuItem1";
+            mirrorToolStripMenuItem1.Size = new Size(224, 26);
+            mirrorToolStripMenuItem1.Text = "Mirror";
+            mirrorToolStripMenuItem1.Click += mirrorToolStripMenuItem1_Click;
+            // 
+            // histogramToolStripMenuItem
+            // 
+            histogramToolStripMenuItem.Name = "histogramToolStripMenuItem";
+            histogramToolStripMenuItem.Size = new Size(224, 26);
+            histogramToolStripMenuItem.Text = "Histogram";
+            histogramToolStripMenuItem.Click += histogramToolStripMenuItem_Click;
+            // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
@@ -140,13 +155,6 @@
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 2;
             pictureBox2.TabStop = false;
-            // 
-            // mirrorToolStripMenuItem1
-            // 
-            mirrorToolStripMenuItem1.Name = "mirrorToolStripMenuItem1";
-            mirrorToolStripMenuItem1.Size = new Size(224, 26);
-            mirrorToolStripMenuItem1.Text = "Mirror";
-            mirrorToolStripMenuItem1.Click += mirrorToolStripMenuItem1_Click;
             // 
             // Form1
             // 
@@ -183,5 +191,6 @@
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem sepiaToolStripMenuItem;
         private ToolStripMenuItem mirrorToolStripMenuItem1;
+        private ToolStripMenuItem histogramToolStripMenuItem;
     }
 }
