@@ -21,7 +21,7 @@ namespace Image_Processing
         float angleRadians;
         int xCenter;
         int yCenter;
-        int xs, ys, xp, yp, x0, y0;
+        int xs, ys, x0, y0;
         float cosA, sinA;
         public ImageProcessingForm()
         {
@@ -74,7 +74,9 @@ namespace Image_Processing
         {
             this.height = _loadedImage.Height;
             this.width = _loadedImage.Width;
-            this.stride = loadedData.Stride;
+            if(loadedData != null) { 
+                this.stride = loadedData.Stride;
+            }
         }
         private void setPictureBoxTwoImage()
         {
@@ -91,13 +93,14 @@ namespace Image_Processing
             this.setLockedBitmapData();
             this.setDefaults();
 
-            if (processDefiner == "Rotation" && value != null) { 
-                angleRadians = (float)(value * Math.PI / 180);
-                xCenter = (int)(width / 2);
-                yCenter = (int)(height / 2);
-                cosA = (float)Math.Cos(angleRadians);
-                sinA = (float)Math.Sin(angleRadians);
-            }
+            //if (processDefiner == "Rotation" && value != null)
+            //{
+            //    angleRadians = (float)(value * Math.PI / 180);
+            //    xCenter = (width / 2);
+            //    yCenter = (height / 2);
+            //    cosA = (float)Math.Cos(angleRadians);
+            //    sinA = (float)Math.Sin(angleRadians);
+            //}
 
             unsafe
             {
@@ -111,7 +114,7 @@ namespace Image_Processing
                 byte* destinationPointer = (byte*)processedData.Scan0;
 
                 // https://stackoverflow.com/questions/12405938/save-time-with-parallel-for-loop
-                if (processDefiner == "MirrorHori" || processDefiner == "MirrorVerti" )
+                if (processDefiner == "MirrorHori" || processDefiner == "MirrorVerti")
                 {
                     // The Parallel.For(0, height, y => { ... }) loop allows each row (y)
                     // to be processed independently by different threads.
@@ -146,7 +149,7 @@ namespace Image_Processing
                             }
                         });
                     else
-                        Parallel.For(0, height/2, y =>
+                        Parallel.For(0, height / 2, y =>
                         {
                             for (int x = 0; x < width; x++)
                             {
@@ -192,11 +195,23 @@ namespace Image_Processing
                             byte red = sourcePointer[index + 2];
                             switch (processDefiner)
                             {
-                                case "Rotation":
-                                    if (value != null) {
+                                //case "Rotation":
+                                //    // Translate coordinates based on center
+                                //    x0 = x - xCenter;
+                                //    y0 = y - yCenter;
+                                //    xs = (int)(x0 * cosA - y0 * sinA + xCenter);  // x rotation transformation
+                                //    ys = (int)(x0 * sinA + y0 * cosA + yCenter);  // y rotation transformation
+                                //    // Clamp to image boundaries
+                                //    xs = Math.Max(0, Math.Min(width - 1, xs));
+                                //    ys = Math.Max(0, Math.Min(height - 1, ys));
+                                //    // Calculate source pixel index in the original image
+                                //    int sourceIndex = ys * stride + xs * 3;
+                                //    // Set destination pixel using source pixel values
+                                //    destinationPointer[index] = sourcePointer[sourceIndex];         // Blue
+                                //    destinationPointer[index + 1] = sourcePointer[sourceIndex + 1]; // Green
+                                //    destinationPointer[index + 2] = sourcePointer[sourceIndex + 2]; // Red
+                                //    break;
 
-                                    }
-                                    break;
                                 case "PixelCopy":
                                     destinationPointer[index] = sourcePointer[index];         // Blue
                                     destinationPointer[index + 1] = sourcePointer[index + 1]; // Green
@@ -450,6 +465,60 @@ namespace Image_Processing
         private void mirrorVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.imagePointerHandler("MirrorVerti", null);
+        }
+
+        private void rotationTrackBar_Scroll(object sender, EventArgs e)
+        {
+            this.setProcessedImage();
+            this.setDefaults();
+            this.setLockedBitmapData();
+
+            angleRadians = (float)(rotationTrackBar.Value * Math.PI / 180);
+            xCenter = width / 2;
+            yCenter = height / 2;
+            cosA = (float)Math.Cos(angleRadians);
+            sinA = (float)Math.Sin(angleRadians);
+
+            int sourceStride = loadedData.Stride;
+            int targetStride = processedData.Stride;
+
+            unsafe
+            {
+                byte* sourcePtr = (byte*)loadedData.Scan0;
+                byte* targetPtr = (byte*)processedData.Scan0;
+
+                for (int xp = 0; xp < width; xp++)
+                {
+                    for (int yp = 0; yp < height; yp++)
+                    {
+                        x0 = xp - xCenter;
+                        y0 = yp - yCenter;
+
+                        int xs = (int)(x0 * cosA + y0 * sinA) + xCenter;
+                        int ys = (int)(x0 * -sinA + y0 * cosA) + yCenter;
+
+                        xs = Math.Max(0, Math.Min(width - 1, xs));
+                        ys = Math.Max(0, Math.Min(height - 1, ys));
+                        int sourcePixel = ys * sourceStride + xs * 3;
+                        int targetPixel = yp * targetStride + xp * 3;
+
+                        if (xs < 0 || ys < 0 || xs >= width - 1 || ys >= height - 1) {
+                            targetPtr[targetPixel] = 0;
+                            targetPtr[targetPixel + 1] = 0;
+                            targetPtr[targetPixel + 2] = 0;
+                        } else{
+                            targetPtr[targetPixel] = sourcePtr[sourcePixel];
+                            targetPtr[targetPixel + 1] = sourcePtr[sourcePixel + 1];
+                            targetPtr[targetPixel + 2] = sourcePtr[sourcePixel + 2];
+                        }
+                    }
+                }
+            }
+
+            _loadedImage.UnlockBits(loadedData);
+            _processedImage.UnlockBits(processedData);
+
+            processedPictureBox.Image = _processedImage;
         }
 
         // The rotation matrix is given by the following form:

@@ -101,49 +101,49 @@
             // pixelCopyToolStripMenuItem
             // 
             pixelCopyToolStripMenuItem.Name = "pixelCopyToolStripMenuItem";
-            pixelCopyToolStripMenuItem.Size = new Size(224, 28);
+            pixelCopyToolStripMenuItem.Size = new Size(197, 28);
             pixelCopyToolStripMenuItem.Text = "Pixel Copy";
             pixelCopyToolStripMenuItem.Click += pixelCopyToolStripMenuItem_Click;
             // 
             // grayscallingToolStripMenuItem
             // 
             grayscallingToolStripMenuItem.Name = "grayscallingToolStripMenuItem";
-            grayscallingToolStripMenuItem.Size = new Size(224, 28);
+            grayscallingToolStripMenuItem.Size = new Size(197, 28);
             grayscallingToolStripMenuItem.Text = "Grayscaling";
             grayscallingToolStripMenuItem.Click += grayscallingToolStripMenuItem_Click;
             // 
             // mirrorToolStripMenuItem
             // 
             mirrorToolStripMenuItem.Name = "mirrorToolStripMenuItem";
-            mirrorToolStripMenuItem.Size = new Size(224, 28);
+            mirrorToolStripMenuItem.Size = new Size(197, 28);
             mirrorToolStripMenuItem.Text = "Inversion";
             mirrorToolStripMenuItem.Click += mirrorToolStripMenuItem_Click;
             // 
             // sepiaToolStripMenuItem
             // 
             sepiaToolStripMenuItem.Name = "sepiaToolStripMenuItem";
-            sepiaToolStripMenuItem.Size = new Size(224, 28);
+            sepiaToolStripMenuItem.Size = new Size(197, 28);
             sepiaToolStripMenuItem.Text = "Sepia";
             sepiaToolStripMenuItem.Click += sepiaToolStripMenuItem_Click;
             // 
             // mirrorToolStripMenuItem1
             // 
             mirrorToolStripMenuItem1.Name = "mirrorToolStripMenuItem1";
-            mirrorToolStripMenuItem1.Size = new Size(224, 28);
+            mirrorToolStripMenuItem1.Size = new Size(197, 28);
             mirrorToolStripMenuItem1.Text = "Mirror Horizontal";
             mirrorToolStripMenuItem1.Click += mirrorToolStripMenuItem1_Click;
             // 
             // mirrorVerticalToolStripMenuItem
             // 
             mirrorVerticalToolStripMenuItem.Name = "mirrorVerticalToolStripMenuItem";
-            mirrorVerticalToolStripMenuItem.Size = new Size(224, 28);
+            mirrorVerticalToolStripMenuItem.Size = new Size(197, 28);
             mirrorVerticalToolStripMenuItem.Text = "Mirror Vertical";
             mirrorVerticalToolStripMenuItem.Click += mirrorVerticalToolStripMenuItem_Click;
             // 
             // histogramToolStripMenuItem
             // 
             histogramToolStripMenuItem.Name = "histogramToolStripMenuItem";
-            histogramToolStripMenuItem.Size = new Size(224, 28);
+            histogramToolStripMenuItem.Size = new Size(197, 28);
             histogramToolStripMenuItem.Text = "Histogram";
             histogramToolStripMenuItem.Click += histogramToolStripMenuItem_Click;
             // 
@@ -231,8 +231,9 @@
             rotationTrackBar.Name = "rotationTrackBar";
             rotationTrackBar.Size = new Size(273, 56);
             rotationTrackBar.TabIndex = 7;
+            rotationTrackBar.Scroll += rotationTrackBar_Scroll;
             // 
-            // Form1
+            // ImageProcessingForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -246,7 +247,7 @@
             Controls.Add(sourcePictureBox);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
-            Name = "Form1";
+            Name = "ImageProcessingForm";
             Text = "CS345 Image Processing";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
